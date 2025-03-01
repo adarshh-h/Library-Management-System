@@ -1,10 +1,11 @@
 const express = require("express");
-const { registerLibrarian, login } = require("../controllers/authController");
+const { librarianLogin, studentLogin, logout, checkSession } = require("../controllers/authController");
 
 const router = express.Router();
 
-// ✅ Correct Route for Librarian Registration
-router.post("/register-librarian", registerLibrarian);
-router.post("/login", login);
+router.post("/librarian-login", librarianLogin);
+router.post("/student-login", studentLogin);
+router.post("/logout", logout);
+router.get("/check-session", checkSession); // ✅ Session validation route
 
 module.exports = router;
