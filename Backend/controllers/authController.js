@@ -28,96 +28,11 @@
 //     }
 // };
 
-// // ✅ Fix Login Function (Ensure bcrypt.compare works correctly)
-// exports.login = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         // ✅ Find user by email
-//         const user = await User.findOne({ email });
-//         if (!user) return res.status(400).json({ message: "Invalid Credentials" });
-
-//         // ✅ Compare entered password with stored hash
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) return res.status(400).json({ message: "Invalid Credentials" });
-
-//         // ✅ Generate JWT Token
-//         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-//         res.json({ token, user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-//     } catch (error) {
-//         console.error("Login Error:", error);
-//         res.status(500).json({ message: "Server Error" });
-//     }
-// };
-
-// const User = require("../models/User");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-
-// // ✅ Librarian Login Route
-// exports.librarianLogin = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         // ✅ Find librarian by email
-//         const user = await User.findOne({ email, role: "librarian" });
-//         if (!user) return res.status(400).json({ message: "Librarian not found!" });
-
-//         // ✅ Compare entered password with stored hash
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
-
-//         // ✅ Generate JWT Token
-//         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-//         // ✅ Store token in HttpOnly cookie (more secure than localStorage)
-//         res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "Strict", maxAge: 3600000 });
-
-//         res.json({ message: "Librarian logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error" });
-//     }
-// };
-
-// // ✅ Student Login Route
-// exports.studentLogin = async (req, res) => {
-//     try {
-//         const { email, password } = req.body;
-
-//         // ✅ Find student by email
-//         const user = await User.findOne({ email, role: "student" });
-//         if (!user) return res.status(400).json({ message: "Student not found!" });
-
-//         // ✅ Compare entered password with stored hash
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
-
-//         // ✅ Generate JWT Token
-//         const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
-
-//         // ✅ Store token in HttpOnly cookie
-//         res.cookie("token", token, { httpOnly: true, secure: true, sameSite: "Strict", maxAge: 3600000 });
-
-//         res.json({ message: "Student logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-//     } catch (error) {
-//         res.status(500).json({ message: "Server Error" });
-//     }
-// };
-
-// // ✅ Logout Route (Clears Token)
-// exports.logout = (req, res) => {
-//     res.clearCookie("token");
-//     res.json({ message: "Logged out successfully!" });
-// };
-
-
-
-
 
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const { body, validationResult } = require("express-validator");
 
 // ✅ Generate JWT & Set Cookie (Secure & Flexible)
 const generateToken = (res, user) => {
@@ -131,45 +46,69 @@ const generateToken = (res, user) => {
     });
 };
 
-// ✅ Librarian Login
-exports.librarianLogin = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!process.env.JWT_SECRET) return res.status(500).json({ message: "Server configuration error!" });
+// ✅ Librarian Login with Validation
+exports.librarianLogin = [
+    // Validate email and password
+    body("email").isEmail().withMessage("Please provide a valid email address."),
+    body("password").notEmpty().withMessage("Password is required."),
 
-        const user = await User.findOne({ email, role: "librarian" });
-        if (!user) return res.status(400).json({ message: "Librarian not found!" });
+    async (req, res) => {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
+        try {
+            const { email, password } = req.body;
+            if (!process.env.JWT_SECRET) return res.status(500).json({ message: "Server configuration error!" });
 
-        generateToken(res, user);
+            const user = await User.findOne({ email, role: "librarian" });
+            if (!user) return res.status(400).json({ message: "Librarian not found!" });
 
-        res.json({ message: "Librarian logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-    } catch (error) {
-        res.status(500).json({ message: "Server Error" });
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
+
+            generateToken(res, user);
+
+            res.json({ message: "Librarian logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+        } catch (error) {
+            res.status(500).json({ message: "Server Error" });
+        }
     }
-};
+];
 
-// ✅ Student Login
-exports.studentLogin = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        if (!process.env.JWT_SECRET) return res.status(500).json({ message: "Server configuration error!" });
+// ✅ Student Login with Validation
+exports.studentLogin = [
+    // Validate email and password
+    body("email").isEmail().withMessage("Please provide a valid email address."),
+    body("password").notEmpty().withMessage("Password is required."),
 
-        const user = await User.findOne({ email, role: "student" });
-        if (!user) return res.status(400).json({ message: "Student not found!" });
+    async (req, res) => {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
 
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
+        try {
+            const { email, password } = req.body;
+            if (!process.env.JWT_SECRET) return res.status(500).json({ message: "Server configuration error!" });
 
-        generateToken(res, user);
+            const user = await User.findOne({ email, role: "student" });
+            if (!user) return res.status(400).json({ message: "Student not found!" });
 
-        res.json({ message: "Student logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
-    } catch (error) {
-        res.status(500).json({ message: "Server Error" });
+            const isMatch = await bcrypt.compare(password, user.password);
+            if (!isMatch) return res.status(400).json({ message: "Invalid credentials!" });
+
+            generateToken(res, user);
+
+            res.json({ message: "Student logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+        } catch (error) {
+            res.status(500).json({ message: "Server Error" });
+        }
     }
-};
+];
 
 // ✅ Logout Route (Clears Token & Expiry)
 exports.logout = (req, res) => {
