@@ -1,137 +1,3 @@
-// import { useState } from "react";
-// import axios from "axios";
-
-// const CreateStudent = () => {
-//     const [name, setName] = useState("");
-//     const [email, setEmail] = useState("");
-//     const [phone, setPhone] = useState("");
-//     const [department, setDepartment] = useState("");
-//     const [batch, setBatch] = useState("");
-//     const [rollNumber, setRollNumber] = useState("");
-//     const [loading, setLoading] = useState(false);
-//     const [error, setError] = useState("");
-//     const [generatedPassword, setGeneratedPassword] = useState("");
-//     const [success, setSuccess] = useState("");
-
-//     const handleSubmit = async (e) => {
-//         e.preventDefault();
-//         setLoading(true);
-//         setError("");
-//         setSuccess("");
-
-//         try {
-//             const response = await axios.post(
-//                 "http://localhost:5000/api/admin/create-student",
-//                 { name, email, phone, department, batch, rollNumber },
-//                 { withCredentials: true }
-//             );
-
-//             setGeneratedPassword(response.data.password);
-//             setSuccess("Student account created successfully!");
-//             resetForm(); // Clear the form after successful submission
-//         } catch (error) {
-//             setError(error.response?.data?.message || "Failed to create student account.");
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     const resetForm = () => {
-//         setName("");
-//         setEmail("");
-//         setPhone("");
-//         setDepartment("");
-//         setBatch("");
-//         setRollNumber("");
-//     };
-
-//     return (
-//         <div className="flex items-center justify-center min-h-screen bg-gray-100">
-//             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-//                 <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">Create Student Account</h2>
-//                 <form onSubmit={handleSubmit} className="space-y-4">
-//                     <input
-//                         type="text"
-//                         placeholder="Name"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={name}
-//                         onChange={(e) => setName(e.target.value)}
-//                         required
-//                     />
-//                     <input
-//                         type="email"
-//                         placeholder="Email"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={email}
-//                         onChange={(e) => setEmail(e.target.value)}
-//                         required
-//                     />
-//                     <input
-//                         type="text"
-//                         placeholder="Phone"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={phone}
-//                         onChange={(e) => setPhone(e.target.value)}
-//                         required
-//                     />
-//                     <input
-//                         type="text"
-//                         placeholder="Department"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={department}
-//                         onChange={(e) => setDepartment(e.target.value)}
-//                         required
-//                     />
-//                     <input
-//                         type="text"
-//                         placeholder="Batch"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={batch}
-//                         onChange={(e) => setBatch(e.target.value)}
-//                         required
-//                     />
-//                     <input
-//                         type="text"
-//                         placeholder="Roll Number"
-//                         className="w-full p-3 border rounded-lg"
-//                         value={rollNumber}
-//                         onChange={(e) => setRollNumber(e.target.value)}
-//                         required
-//                     />
-//                     <button
-//                         type="submit"
-//                         className="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center"
-//                         disabled={loading}
-//                     >
-//                         {loading ? "Creating..." : "Create Student"}
-//                     </button>
-//                     {error && <p className="text-red-500 text-center">{error}</p>}
-//                     {success && (
-//                         <div className="mt-4 p-4 bg-green-100 rounded-lg">
-//                             <p className="text-green-700">
-//                                 <strong>Success:</strong> {success}
-//                             </p>
-//                             <p className="text-sm text-green-600">
-//                                 <strong>Student Password:</strong> {generatedPassword}
-//                             </p>
-//                             </div>
-//                     )}
-//                             <button
-//                                 type="button"
-//                                 onClick={resetForm}
-//                                 className="mt-2 w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-//                             >
-//                                 Add Another Student
-//                             </button>
-                     
-//                 </form>
-//             </div>
-//         </div>
-//     );
-// };
-
-// export default CreateStudent;
-
 import { useState } from "react";
 import axios from "axios";
 
@@ -144,6 +10,7 @@ const CreateStudent = () => {
     const [rollNumber, setRollNumber] = useState("");
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [success, setSuccess] = useState("");
 
     // Predefined list of departments
     const departments = [
@@ -190,6 +57,7 @@ const CreateStudent = () => {
         e.preventDefault();
         setLoading(true);
         setError("");
+        setSuccess("");
 
         // Validate inputs
         if (!validateName(name)) {
@@ -229,14 +97,22 @@ const CreateStudent = () => {
         }
 
         try {
-            const response = await axios.post(
+            await axios.post(
                 "http://localhost:5000/api/admin/create-student",
                 { name, email, phone, department, batch, rollNumber },
                 { withCredentials: true }
             );
 
+            // Show success message
+            setSuccess("Student account created successfully!");
+
             // Reset the form after successful submission
             resetForm();
+
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+                setSuccess("");
+            }, 3000);
         } catch (error) {
             setError(error.response?.data?.message || "Failed to create student account.");
         } finally {
@@ -258,65 +134,168 @@ const CreateStudent = () => {
             <div className="bg-white p-8 rounded-lg shadow-lg w-96">
                 <h2 className="text-3xl font-semibold text-center mb-6 text-blue-600">Create Student Account</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    <input
-                        type="text"
-                        placeholder="Name"
-                        className="w-full p-3 border rounded-lg"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="email"
-                        placeholder="Email"
-                        className="w-full p-3 border rounded-lg"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Phone"
-                        className="w-full p-3 border rounded-lg"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        required
-                    />
-                    <select
-                        value={department}
-                        onChange={(e) => setDepartment(e.target.value)}
-                        className="w-full p-3 border rounded-lg"
-                        required
-                    >
-                        <option value="" disabled>Select Department</option>
-                        {departments.map((dept, index) => (
-                            <option key={index} value={dept}>{dept}</option>
-                        ))}
-                    </select>
-                    <input
-                        type="text"
-                        placeholder="Batch (e.g., 2021-2025)"
-                        className="w-full p-3 border rounded-lg"
-                        value={batch}
-                        onChange={(e) => setBatch(e.target.value)}
-                        required
-                    />
-                    <input
-                        type="text"
-                        placeholder="Roll Number"
-                        className="w-full p-3 border rounded-lg"
-                        value={rollNumber}
-                        onChange={(e) => setRollNumber(e.target.value)}
-                        required
-                    />
+                    {/* Name Field */}
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Name"
+                            className="w-full p-3 border rounded-lg"
+                            value={name}
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (error) setError("");
+                            }}
+                            required
+                        />
+                        {!validateName(name) && name && (
+                            <p className="text-red-500 text-sm mt-1">
+                                Name can only contain alphabets, spaces, hyphens, and apostrophes!
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Email Field */}
+                    <div>
+                        <input
+                            type="email"
+                            placeholder="Email"
+                            className="w-full p-3 border rounded-lg"
+                            value={email}
+                            onChange={(e) => {
+                                setEmail(e.target.value);
+                                if (error) setError("");
+                            }}
+                            required
+                        />
+                        {!validateEmail(email) && email && (
+                            <p className="text-red-500 text-sm mt-1">
+                                Please enter a valid email address!
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Phone Field */}
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Phone"
+                            className="w-full p-3 border rounded-lg"
+                            value={phone}
+                            onChange={(e) => {
+                                setPhone(e.target.value);
+                                if (error) setError("");
+                            }}
+                            required
+                        />
+                        {!validatePhone(phone) && phone && (
+                            <p className="text-red-500 text-sm mt-1">
+                                Please enter a valid 10-digit phone number!
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Department Dropdown */}
+                    <div>
+                        <select
+                            value={department}
+                            onChange={(e) => {
+                                setDepartment(e.target.value);
+                                if (error) setError("");
+                            }}
+                            className="w-full p-3 border rounded-lg"
+                            required
+                        >
+                            <option value="" disabled>Select Department</option>
+                            {departments.map((dept, index) => (
+                                <option key={index} value={dept}>{dept}</option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Batch Field */}
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Batch (e.g., 2021-2025)"
+                            className="w-full p-3 border rounded-lg"
+                            value={batch}
+                            onChange={(e) => {
+                                setBatch(e.target.value);
+                                if (error) setError("");
+                            }}
+                            required
+                        />
+                        {!validateBatch(batch) && batch && (
+                            <p className="text-red-500 text-sm mt-1">
+                                Batch must be in the format YYYY-YYYY (e.g., 2021-2025)!
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Roll Number Field */}
+                    <div>
+                        <input
+                            type="text"
+                            placeholder="Roll Number"
+                            className="w-full p-3 border rounded-lg"
+                            value={rollNumber}
+                            onChange={(e) => {
+                                setRollNumber(e.target.value);
+                                if (error) setError("");
+                            }}
+                            required
+                        />
+                        {!validateRollNumber(rollNumber) && rollNumber && (
+                            <p className="text-red-500 text-sm mt-1">
+                                Roll number can only contain numbers!
+                            </p>
+                        )}
+                    </div>
+
+                    {/* Submit Button */}
                     <button
                         type="submit"
                         className="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center"
                         disabled={loading}
                     >
-                        {loading ? "Creating..." : "Create Student"}
+                        {loading ? (
+                            <span className="flex items-center">
+                                <svg
+                                    className="animate-spin h-5 w-5 mr-3 text-white"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                >
+                                    <circle
+                                        className="opacity-25"
+                                        cx="12"
+                                        cy="12"
+                                        r="10"
+                                        stroke="currentColor"
+                                        strokeWidth="4"
+                                    ></circle>
+                                    <path
+                                        className="opacity-75"
+                                        fill="currentColor"
+                                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                    ></path>
+                                </svg>
+                                Creating...
+                            </span>
+                        ) : (
+                            "Create Student"
+                        )}
                     </button>
+
+                    {/* Error Message */}
                     {error && <p className="text-red-500 text-center">{error}</p>}
+
+                    {/* Success Message */}
+                    {success && (
+                        <div className="mt-4 p-4 bg-green-100 rounded-lg">
+                            <p className="text-green-700 text-center">{success}</p>
+                        </div>
+                    )}
                 </form>
             </div>
         </div>

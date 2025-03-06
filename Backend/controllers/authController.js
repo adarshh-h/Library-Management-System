@@ -1,8 +1,4 @@
-// const User = require("../models/User");
-// const bcrypt = require("bcryptjs");
-// const jwt = require("jsonwebtoken");
-
-// // ✅ Librarian Registration (Fix: Don't hash password in controller)
+// ✅ Librarian Registration (Fix: Don't hash password in controller)
 // exports.registerLibrarian = async (req, res) => {
 //     try {
 //         const { name, email, phone, password, department } = req.body;

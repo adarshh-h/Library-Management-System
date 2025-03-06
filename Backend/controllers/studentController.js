@@ -1,48 +1,107 @@
+const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const csv = require("csv-parser");
+const fs = require("fs");
 
-// ✅ Create Student Account (Only for Librarians)
-// exports.createStudent = async (req, res) => {
-    // try {
-    //     const { name, email, phone, department, batch, rollNumber } = req.body;
+exports.bulkImportStudents = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: "No file uploaded!" });
+        }
 
-    //     // Check if the student already exists
-    //     const studentExists = await User.findOne({ email });
-    //     if (studentExists) {
-    //         return res.status(400).json({ message: "A student with this email already exists!" });
-    //     }
+        const students = [];
+        const errors = [];
+        const duplicates = [];
 
-    //     // Generate password based on the student's name
-    //     const firstName = name.split(" ")[0]; // Extract the first name
-    //     const password = `${firstName.substring(0, 2)}@123`; // First two letters + "@123"
+        fs.createReadStream(req.file.path)
+            .pipe(csv())
+            .on("data", (row) => {
+                // Validate inputs
+                if (!row.name || !row.email || !row.phone || !row.department || !row.batch || !row.rollNumber) {
+                    errors.push({ row, error: "Missing required fields" });
+                    return;
+                }
 
-    //     // Create the student account
-    //     const student = new User({
-    //         name,
-    //         email,
-    //         phone,
-    //         password, // Password will be hashed by the pre-save hook in the User model
-    //         department,
-    //         batch,
-    //         rollNumber, // Add rollNumber for students
-    //         role: "student", // Set role to "student"
-    //         createdBy: req.user._id, // Track which librarian created this student
-    //     });
+                // Validate email format
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(row.email)) {
+                    errors.push({ row, error: "Invalid email format" });
+                    return;
+                }
 
-    //     await student.save();
+                // Validate phone number (10 digits)
+                const phoneRegex = /^\d{10}$/;
+                if (!phoneRegex.test(row.phone)) {
+                    errors.push({ row, error: "Invalid phone number" });
+                    return;
+                }
 
-    //     // Return the auto-generated password (for one-time use)
-    //     res.status(201).json({
-    //         message: "Student account created successfully!",
-    //         student: { name, email, department, batch, rollNumber },
-    //         password, // Send the auto-generated password to the librarian
-    //     });
-    // } catch (error) {
-    //     console.error("Error creating student account:", error);
-    //     res.status(500).json({ message: "Server Error" });
-    // }
+                // Validate batch format (YYYY-YYYY)
+                const batchRegex = /^\d{4}-\d{4}$/;
+                if (!batchRegex.test(row.batch)) {
+                    errors.push({ row, error: "Invalid batch format" });
+                    return;
+                }
 
-// };
+                // Validate roll number (only numbers)
+                const rollNumberRegex = /^\d+$/;
+                if (!rollNumberRegex.test(row.rollNumber)) {
+                    errors.push({ row, error: "Invalid roll number" });
+                    return;
+                }
 
+                // Generate password and hash it
+                const password = `${row.name.substring(0, 2)}@123`;
+                const hashedPassword = bcrypt.hashSync(password, 10);
+
+                // Add student to the list
+                const student = {
+                    name: row.name,
+                    email: row.email,
+                    phone: row.phone,
+                    department: row.department,
+                    batch: row.batch,
+                    rollNumber: row.rollNumber,
+                    password: hashedPassword, // Store hashed password
+                    role: "student",
+                    createdBy: req.user._id,
+                };
+                students.push(student);
+            })
+            .on("end", async () => {
+                // Check for duplicate emails
+                const existingEmails = await User.find({ email: { $in: students.map(s => s.email) } }).select("email");
+                const existingEmailSet = new Set(existingEmails.map(e => e.email));
+
+                const validStudents = students.filter(student => {
+                    if (existingEmailSet.has(student.email)) {
+                        duplicates.push({ student, error: "Duplicate email" });
+                        return false;
+                    }
+                    return true;
+                });
+
+                // Save valid students to the database
+                if (validStudents.length > 0) {
+                    await User.insertMany(validStudents);
+                }
+
+                // Delete the uploaded file
+                fs.unlinkSync(req.file.path);
+
+                // Send response with errors and duplicates
+                res.status(201).json({
+                    message: "Bulk import completed!",
+                    created: validStudents.length,
+                    duplicates,
+                    errors,
+                });
+            });
+    } catch (error) {
+        console.error("Error importing students:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
 exports.createStudent = async (req, res) => {
     try {
@@ -120,3 +179,70 @@ exports.createStudent = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+exports.getStudents = async (req, res) => {
+    try {
+        // Remove createdBy filter to allow all admins to see all students
+        const students = await User.find({ role: "student" }).select("-password");
+        res.status(200).json(students);
+    } catch (error) {
+        console.error("Error fetching students:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+exports.updateStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, email, phone, department, batch, rollNumber } = req.body;
+
+        // Validate inputs (similar to createStudent)
+        const student = await User.findByIdAndUpdate(
+            id,
+            { name, email, phone, department, batch, rollNumber },
+            { new: true }
+        ).select("-password");
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found!" });
+        }
+
+        res.status(200).json({ message: "Student updated successfully!", student });
+    } catch (error) {
+        console.error("Error updating student:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+exports.deleteStudent = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const student = await User.findByIdAndDelete(id);
+        if (!student) {
+            return res.status(404).json({ message: "Student not found!" });
+        }
+
+        res.status(200).json({ message: "Student deleted successfully!" });
+    } catch (error) {
+        console.error("Error deleting student:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+exports.getStudentById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const student = await User.findById(id).select("-password");
+
+        if (!student) {
+            return res.status(404).json({ message: "Student not found!" });
+        }
+
+        res.status(200).json(student);
+    } catch (error) {
+        console.error("Error fetching student:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
