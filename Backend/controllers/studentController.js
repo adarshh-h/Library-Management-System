@@ -101,6 +101,7 @@ exports.bulkImportStudents = async (req, res) => {
         console.error("Error importing students:", error);
         res.status(500).json({ message: "Server Error" });
     }
+   
 };
 
 exports.createStudent = async (req, res) => {

@@ -9,7 +9,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ViewStudents from "./pages/ViewStudents";
 import EditStudent from "./pages/EditStudent";
 import BulkImportStudents from "./pages/BulkImportStudents";
-
+import AddLibrarian from "./pages/AddLibrarian";
 function App() {
     return (
         <Router>
@@ -23,6 +23,7 @@ function App() {
                     <Route path="/view-students" element={<ViewStudents />} />
                     <Route path="/edit-student/:id" element={<EditStudent />} />
                     <Route path="/bulk-import-students" element={<BulkImportStudents />} />
+                    <Route path="/add-librarian" element={<AddLibrarian />} />
                 </Route>
                 <Route element={<ProtectedRoute allowedRole="student" />}>
                     <Route path="/student-dashboard" element={<StudentDashboard />} />

@@ -1,30 +1,3 @@
-// ✅ Librarian Registration (Fix: Don't hash password in controller)
-// exports.registerLibrarian = async (req, res) => {
-//     try {
-//         const { name, email, phone, password, department } = req.body;
-
-//         const userExists = await User.findOne({ email });
-//         if (userExists) return res.status(400).json({ message: "Librarian already exists" });
-
-//         // ❌ Don't hash password here (Schema handles hashing)
-//         const librarian = new User({ 
-//             name, 
-//             email, 
-//             phone, 
-//             password, // Will be hashed in schema
-//             department, 
-//             role: "librarian" 
-//         });
-
-//         await librarian.save();
-//         res.status(201).json({ message: "Librarian registered successfully" });
-//     } catch (error) {
-//         console.error("Error registering librarian:", error);
-//         res.status(500).json({ message: "Server Error" });
-//     }
-// };
-
-
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");

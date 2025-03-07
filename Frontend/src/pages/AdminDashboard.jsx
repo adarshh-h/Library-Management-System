@@ -18,6 +18,14 @@ const AdminDashboard = () => {
         <div className="p-8">
             <h1 className="text-3xl font-bold">Welcome, {user.name} (Librarian)!</h1> {/* ✅ Fixed */}
             <div className="mt-6 space-y-4">
+                {/* Add Librarian Button */}
+                <button
+                    onClick={() => navigate("/add-librarian")}
+                    className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
+                >
+                    Add Librarian
+                </button>
+
                 {/* Create Student Button */}
                 <button
                     onClick={() => navigate("/create-student")} // Navigate to Create Student page
@@ -34,6 +42,14 @@ const AdminDashboard = () => {
                     View Students
                 </button>
 
+                {/* Bulk Import Students Button */}
+                <button
+                    onClick={() => navigate("/bulk-import-students")}
+                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
+                >
+                    Bulk Import Students
+                </button>
+
                 {/* Logout Button */}
                 <button
                     onClick={() => axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
@@ -43,12 +59,6 @@ const AdminDashboard = () => {
                 >
                     Logout
                 </button>
-                <button
-    onClick={() => navigate("/bulk-import-students")}
-    className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
->
-    Bulk Import Students
-</button>
             </div>
         </div>
     );
