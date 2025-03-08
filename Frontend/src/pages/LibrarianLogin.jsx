@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 import axios from "axios";
 
 const LibrarianLogin = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [loading, setLoading] = useState(false); // Add loading state
-    const [error, setError] = useState(""); // Add error state
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        setLoading(true); // Set loading to true when the request starts
-        setError(""); // Clear previous errors
+        setLoading(true);
+        setError("");
 
         try {
             await axios.post(
@@ -24,9 +24,9 @@ const LibrarianLogin = () => {
             localStorage.setItem("role", "librarian");
             navigate("/admin-dashboard", { replace: true });
         } catch (error) {
-            setError(error.response?.data?.message || "Login failed!"); // Set error message
+            setError(error.response?.data?.message || "Login failed!");
         } finally {
-            setLoading(false); // Set loading to false when the request completes
+            setLoading(false);
         }
     };
 
@@ -54,7 +54,7 @@ const LibrarianLogin = () => {
                     <button
                         type="submit"
                         className="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-lg flex items-center justify-center"
-                        disabled={loading} // Disable button while loading
+                        disabled={loading}
                     >
                         {loading ? (
                             <span className="flex items-center">
@@ -84,8 +84,14 @@ const LibrarianLogin = () => {
                             "Login"
                         )}
                     </button>
-                    {error && <p className="text-red-500 text-center">{error}</p>} {/* Display error message */}
+                    {error && <p className="text-red-500 text-center">{error}</p>}
                 </form>
+                {/* Add "Forgot Password" link */}
+                <div className="mt-4 text-center">
+                    <Link to="/forgot-password" className="text-blue-500 hover:text-blue-600">
+                        Forgot Password?
+                    </Link>
+                </div>
             </div>
         </div>
     );

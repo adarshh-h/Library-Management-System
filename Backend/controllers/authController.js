@@ -2,6 +2,80 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { body, validationResult } = require("express-validator");
+const nodemailer = require("nodemailer");
+const otpGenerator = require("otp-generator");
+const otpStorage = {}; 
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+
+        // ✅ Generate a 6-digit OTP (Numbers only)
+        // const otp = otpGenerator.generate(6, { 
+        //     digits: true, 
+        //     alphabets: false, 
+        //     specialChars: false 
+        // });
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+        console.log("Generated OTP:", otp); // Debugging to verify numeric OTP
+
+        // ✅ Store OTP (Modify storage as per your choice: In-Memory, Redis, or MongoDB)
+        otpStorage[email] = { otp, expiresAt: Date.now() + 10 * 60 * 1000 };
+
+        // ✅ Send OTP via email
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+        });
+
+        const mailOptions = {
+            to: user.email,
+            from: process.env.EMAIL_USER,
+            subject: "Password Reset OTP",
+            text: `Your OTP for password reset is: ${otp}. It is valid for 10 minutes.`,
+        };
+
+        await transporter.sendMail(mailOptions);
+        res.status(200).json({ message: "OTP sent to your email." });
+    } catch (error) {
+        console.error("Error in forgotPassword:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
+
+exports.verifyOtp = async (req, res) => {
+    const { email, otp, newPassword } = req.body;
+
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found!" });
+        }
+
+        // ✅ Check OTP in memory
+        if (!otpStorage[email] || otpStorage[email].otp !== otp || Date.now() > otpStorage[email].expiresAt) {
+            return res.status(400).json({ message: "Invalid or expired OTP!" });
+        }
+
+        // ✅ Remove OTP from memory after verification
+        delete otpStorage[email];
+
+        // ✅ Update only the password (role remains unchanged)
+        user.password = newPassword;
+        await user.save({ validateBeforeSave: false });
+
+        res.status(200).json({ message: "Password reset successful!" });
+    } catch (error) {
+        console.error("Error in verifyOtp:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};
 
 // ✅ Generate JWT & Set Cookie (Secure & Flexible)
 const generateToken = (res, user) => {
