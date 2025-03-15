@@ -10,8 +10,9 @@ import ViewStudents from "./pages/ViewStudents";
 import EditStudent from "./pages/EditStudent";
 import BulkImportStudents from "./pages/BulkImportStudents";
 import AddLibrarian from "./pages/AddLibrarian";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage"; // Import the new Forgot Password page
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
+import BulkImportBooks from "./pages/BulkImportBooks";
 
 function App() {
     return (
@@ -21,7 +22,7 @@ function App() {
                 <Route path="/" element={<HomePage />} />
                 <Route path="/librarian-login" element={<LibrarianLogin />} />
                 <Route path="/student-login" element={<StudentLogin />} />
-                <Route path="/forgot-password" element={<ForgotPasswordPage />} /> {/* Forgot Password Route */}
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
 
 
                 {/* Protected Routes for Librarian */}
@@ -32,7 +33,8 @@ function App() {
                     <Route path="/edit-student/:id" element={<EditStudent />} />
                     <Route path="/bulk-import-students" element={<BulkImportStudents />} />
                     <Route path="/add-librarian" element={<AddLibrarian />} />
-
+                 
+                    <Route path="/bulk-import-books" element={<BulkImportBooks />} />
                   
 
                 </Route>
@@ -50,3 +52,4 @@ function App() {
 }
 
 export default App;
+
