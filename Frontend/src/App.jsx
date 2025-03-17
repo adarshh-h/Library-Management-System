@@ -13,6 +13,7 @@ import AddLibrarian from "./pages/AddLibrarian";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 
 import BulkImportBooks from "./pages/BulkImportBooks";
+import ViewBooks from "./pages/ViewBooks";
 
 function App() {
     return (
@@ -35,7 +36,7 @@ function App() {
                     <Route path="/add-librarian" element={<AddLibrarian />} />
                  
                     <Route path="/bulk-import-books" element={<BulkImportBooks />} />
-                  
+                    <Route path="/view-books" element={<ViewBooks />} /> {/* New route */}
 
                 </Route>
 

@@ -60,7 +60,21 @@ const AdminDashboard = () => {
                     Logout
                 </button>
 
-               
+                <button
+                    onClick={() => navigate("/view-books")}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded"
+                >
+                    View Books
+                </button>
+                
+                <button
+                    onClick={() => navigate("/bulk-import-books")}
+                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded"
+                >
+                    Bulk Import Books
+                </button>
+
+
             </div>
         </div>
     );

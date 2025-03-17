@@ -92,3 +92,14 @@ exports.bulkImportBooksCSV = async (req, res) => {
         res.status(500).json({ message: "Server Error" });
     }
 };
+
+// Get all books
+exports.getAllBooks = async (req, res) => {
+    try {
+        const books = await Book.find({}).select("-__v"); // Fetch all books and exclude the __v field
+        res.status(200).json(books);
+    } catch (error) {
+        console.error("Error fetching books:", error);
+        res.status(500).json({ message: "Server Error" });
+    }
+};

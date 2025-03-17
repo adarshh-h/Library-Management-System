@@ -1,22 +1,3 @@
-// const jwt = require("jsonwebtoken");
-
-// const protect = (role) => (req, res, next) => {
-//     const token = req.cookies.token;
-//     if (!token) return res.status(401).json({ message: "Not authorized. Please log in." });
-
-//     try {
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         if (decoded.role !== role) return res.status(403).json({ message: "Access denied." });
-
-//         req.user = decoded;
-//         next();
-//     } catch (error) {
-//         res.status(401).json({ message: "Invalid token." });
-//     }
-// };
-
-// module.exports = { protect };
-
 const jwt = require("jsonwebtoken");
 const User = require("../models/User"); // ✅ Ensure User model is imported
 
