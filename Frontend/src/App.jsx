@@ -11,9 +11,9 @@ import EditStudent from "./pages/EditStudent";
 import BulkImportStudents from "./pages/BulkImportStudents";
 import AddLibrarian from "./pages/AddLibrarian";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
-
 import BulkImportBooks from "./pages/BulkImportBooks";
 import ViewBooks from "./pages/ViewBooks";
+
 
 function App() {
     return (
@@ -33,8 +33,7 @@ function App() {
                     <Route path="/view-students" element={<ViewStudents />} />
                     <Route path="/edit-student/:id" element={<EditStudent />} />
                     <Route path="/bulk-import-students" element={<BulkImportStudents />} />
-                    <Route path="/add-librarian" element={<AddLibrarian />} />
-                 
+                    <Route path="/add-librarian" element={<AddLibrarian />} />       
                     <Route path="/bulk-import-books" element={<BulkImportBooks />} />
                     <Route path="/view-books" element={<ViewBooks />} /> {/* New route */}
 
