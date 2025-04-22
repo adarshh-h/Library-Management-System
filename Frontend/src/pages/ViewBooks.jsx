@@ -69,7 +69,7 @@ const ViewBooks = () => {
                                 <td className="px-6 py-4 text-sm text-gray-500">{book.publication}</td>
                                 <td className="px-6 py-4 text-sm text-gray-500">{book.year}</td>
                                 <td className="px-6 py-4 text-sm text-gray-500">{book.totalPages}</td>
-                                <td className="px-6 py-4 text-sm text-gray-500">${book.price}</td>
+                                <td className="px-6 py-4 text-sm text-gray-500">₹{book.price}</td>
                             </tr>
                         ))}
                     </tbody>

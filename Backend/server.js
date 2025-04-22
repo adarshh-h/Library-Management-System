@@ -4,6 +4,7 @@ const connectDB = require("./config/db");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 
+
 connectDB(); 
 
 const app = express();
@@ -11,7 +12,7 @@ app.use(express.json());
 app.use(cookieParser()); 
 
 app.use(cors({
-    origin: "http://localhost:5173", // Change this to your frontend URL in production
+    origin: "http://localhost:5173", 
     credentials: true 
 }));
 
@@ -19,8 +20,13 @@ app.use(cors({
 app.use("/api/auth", require("./routes/authRoutes"));
 app.use("/api/admin", require("./routes/adminRoutes"));
 app.use("/api/student", require("./routes/studentRoutes"));
-
 app.use("/api/books", require("./routes/bookRoutes")); 
+
+
+app.use("/api/issues", require("./routes/issueRoutes.js"));
+app.use("/api/returns", require("./routes/returnRoutes.js"));
+
+app.use("/api/history", require("./routes/historyRoutes"));
 
 
 const PORT = process.env.PORT || 5000;

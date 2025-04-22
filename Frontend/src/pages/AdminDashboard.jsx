@@ -1,83 +1,121 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {
+  UserPlus, Users, Upload, LogOut,
+  BookOpen, Book, ArrowDownUp, CornerDownLeft
+} from "lucide-react";
 
 const AdminDashboard = () => {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate();
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        axios.get("http://localhost:5000/api/admin/dashboard", { withCredentials: true })
-            .then(res => setUser(res.data.user)) // ✅ Set user correctly
-            .catch(() => navigate("/")); // ✅ Redirect if unauthorized
-    }, [navigate]);
+  useEffect(() => {
+    axios.get("http://localhost:5000/api/admin/dashboard", { withCredentials: true })
+      .then(res => setUser(res.data.user))
+      .catch(() => navigate("/"));
+  }, [navigate]);
 
-    if (!user) return <h2 className="text-center mt-10 text-red-600">Loading...</h2>;
+  const handleLogout = () => {
+    axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
+      .then(() => navigate("/"))
+      .catch(err => console.error("Logout Failed", err));
+  };
 
-    return (
-        <div className="p-8">
-            <h1 className="text-3xl font-bold">Welcome, {user.name} (Librarian)!</h1> {/* ✅ Fixed */}
-            <div className="mt-6 space-y-4">
-                {/* Add Librarian Button */}
-                <button
-                    onClick={() => navigate("/add-librarian")}
-                    className="w-full bg-purple-500 hover:bg-purple-600 text-white px-4 py-2 rounded"
-                >
-                    Add Librarian
-                </button>
+  if (!user) {
+    return <h2 className="text-center mt-10 text-xl text-gray-600 animate-pulse">Loading...</h2>;
+  }
 
-                {/* Create Student Button */}
-                <button
-                    onClick={() => navigate("/create-student")} // Navigate to Create Student page
-                    className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
-                >
-                    Create Student
-                </button>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-gray-100 to-blue-100 py-10 px-4">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-4xl font-bold text-blue-800 mb-10 text-center drop-shadow-sm">
+          📚 Welcome, {user.name} <span className="text-sm font-light">(Librarian)</span>
+        </h1>
 
-                {/* View Students Button */}
-                <button
-                    onClick={() => navigate("/view-students")} // Navigate to View Students page
-                    className="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
-                >
-                    View Students
-                </button>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* User Management */}
+          <DashboardCard
+            title="Add Librarian"
+            icon={<UserPlus className="w-6 h-6" />}
+            onClick={() => navigate("/add-librarian")}
+            color="bg-purple-600"
+          />
+          <DashboardCard
+            title="Create Student"
+            icon={<UserPlus className="w-6 h-6" />}
+            onClick={() => navigate("/create-student")}
+            color="bg-blue-600"
+          />
+          <DashboardCard
+            title="View Students"
+            icon={<Users className="w-6 h-6" />}
+            onClick={() => navigate("/view-students")}
+            color="bg-green-600"
+          />
+          <DashboardCard
+            title="Bulk Import Students"
+            icon={<Upload className="w-6 h-6" />}
+            onClick={() => navigate("/bulk-import-students")}
+            color="bg-yellow-500"
+          />
 
-                {/* Bulk Import Students Button */}
-                <button
-                    onClick={() => navigate("/bulk-import-students")}
-                    className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded"
-                >
-                    Bulk Import Students
-                </button>
+          {/* Book Management */}
+          <DashboardCard
+            title="View Books"
+            icon={<Book className="w-6 h-6" />}
+            onClick={() => navigate("/view-books")}
+            color="bg-indigo-500"
+          />
+          <DashboardCard
+            title="Bulk Import Books"
+            icon={<Upload className="w-6 h-6" />}
+            onClick={() => navigate("/bulk-import-books")}
+            color="bg-indigo-600"
+          />
+          <DashboardCard
+            title="Issue Books"
+            icon={<ArrowDownUp className="w-6 h-6" />}
+            onClick={() => navigate("/issue-books")}
+            color="bg-pink-500"
+          />
+          <DashboardCard
+            title="Return Books"
+            icon={<CornerDownLeft className="w-6 h-6" />}
+            onClick={() => navigate("/return-books")}
+            color="bg-orange-500"
+          />
 
-                {/* Logout Button */}
-                <button
-                    onClick={() => axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
-                        .then(() => navigate("/"))
-                        .catch(err => console.error("Logout Failed", err))}
-                    className="w-full bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
-                >
-                    Logout
-                </button>
+          {/* Other Features (Optional Scope) */}
+          <DashboardCard
+            title="Transaction History"
+            icon={<BookOpen className="w-6 h-6" />}
+            onClick={() => navigate("/history-books")}
+            color="bg-blue-700"
+          />
 
-                <button
-                    onClick={() => navigate("/view-books")}
-                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded"
-                >
-                    View Books
-                </button>
-                
-                <button
-                    onClick={() => navigate("/bulk-import-books")}
-                    className="w-full bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded"
-                >
-                    Bulk Import Books
-                </button>
-
-
-            </div>
+          {/* Logout */}
+          <DashboardCard
+            title="Logout"
+            icon={<LogOut className="w-6 h-6" />}
+            onClick={handleLogout}
+            color="bg-red-600"
+          />
         </div>
-    );
+      </div>
+    </div>
+  );
 };
+
+const DashboardCard = ({ title, icon, onClick, color }) => (
+  <button
+    onClick={onClick}
+    className={`flex items-center justify-between px-5 py-4 rounded-xl shadow-lg text-white transition-all duration-300 transform hover:scale-105 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-offset-2 ${color}`}
+    aria-label={title}
+  >
+    <span className="text-lg font-medium">{title}</span>
+    {icon}
+  </button>
+);
 
 export default AdminDashboard;

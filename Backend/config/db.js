@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-require("dotenv").config();  // Load from backend folder
+require("dotenv").config();
 
 const connectDB = async () => {
     console.log("MONGO_URI from .env:", process.env.MONGO_URI);  // Debugging

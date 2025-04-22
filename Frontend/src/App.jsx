@@ -14,6 +14,13 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import BulkImportBooks from "./pages/BulkImportBooks";
 import ViewBooks from "./pages/ViewBooks";
 
+import IssueBooks from "./pages/IssueBooks";
+import ReturnBooks from "./pages/ReturnBooks";
+import HistoryView from "./pages/HistorySearch";
+
+import StudentHistory from './pages/StudentHistory';
+import ChangePassword from './pages/ChangePassword';
+
 
 function App() {
     return (
@@ -37,11 +44,18 @@ function App() {
                     <Route path="/bulk-import-books" element={<BulkImportBooks />} />
                     <Route path="/view-books" element={<ViewBooks />} /> {/* New route */}
 
+                    <Route path="/issue-books" element={<IssueBooks />} />   
+                    <Route path="return-books" element={<ReturnBooks/>}/>
+                    <Route path="history-books" element={<HistoryView/>}/>
+                   
                 </Route>
 
                 {/* Protected Routes for Student */}
                 <Route element={<ProtectedRoute allowedRole="student" />}>
                     <Route path="/student-dashboard" element={<StudentDashboard />} />
+
+                    <Route path="/student/history" element={<StudentHistory />} />
+                    <Route path="/student/change-password" element={<ChangePassword />} />
                 </Route>
 
                 {/* Catch-all Route */}

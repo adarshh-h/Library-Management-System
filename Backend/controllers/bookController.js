@@ -93,7 +93,6 @@ exports.bulkImportBooksCSV = async (req, res) => {
     }
 };
 
-// Get all books
 exports.getAllBooks = async (req, res) => {
     try {
         const books = await Book.find({}).select("-__v"); // Fetch all books and exclude the __v field
