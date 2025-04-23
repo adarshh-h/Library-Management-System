@@ -78,14 +78,26 @@ exports.verifyOtp = async (req, res) => {
 };
 
 // ✅ Generate JWT & Set Cookie (Secure & Flexible)
+// const generateToken = (res, user) => {
+//     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+//     res.cookie("token", token, {
+//         httpOnly: true,
+//         secure: process.env.NODE_ENV === "production", // ✅ Only secure in production
+//         sameSite: "Strict",
+//         maxAge: 3600000 // ✅ 1 Hour Expiry
+//     });
+// };
 const generateToken = (res, user) => {
     const token = jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     res.cookie("token", token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production", // ✅ Only secure in production
-        sameSite: "Strict",
-        maxAge: 3600000 // ✅ 1 Hour Expiry
+        secure: true, // Required for HTTPS & cross-domain
+        sameSite: "None", // Required for cross-domain cookies
+        maxAge: 3600000, // 1 hour expiry
+        path: "/", // Available on all paths
+        // ⚠️ Do NOT set 'domain' since frontend & backend are on different domains
     });
 };
 
