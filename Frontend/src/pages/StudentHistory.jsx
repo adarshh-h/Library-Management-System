@@ -8,7 +8,7 @@ const StudentHistory = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/student/history", { withCredentials: true })
+        axios.get("https://library-management-system-ae84.onrender.com/api/student/history", { withCredentials: true })
             .then(res => {
                 setTransactions(res.data.transactions);
             })
