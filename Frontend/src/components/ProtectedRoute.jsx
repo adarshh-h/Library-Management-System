@@ -7,7 +7,7 @@ const ProtectedRoute = ({ allowedRole }) => {
     const role = localStorage.getItem("role");
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/auth/check-session", { withCredentials: true })
+        axios.get("https://library-management-system-ae84.onrender.com/api/auth/check-session", { withCredentials: true })
             .then((res) => {
                 if (res.data.user.role !== allowedRole) {
                     window.location.href = allowedRole === "librarian" ? "/admin-dashboard" : "/student-dashboard";
