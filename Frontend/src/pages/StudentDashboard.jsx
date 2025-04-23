@@ -52,7 +52,6 @@ const handleLogout = async () => {
         setLoggingOut(false);
     }
 };
-
     if (loading) return <div className="text-center mt-10">Loading...</div>;
 
     return (
