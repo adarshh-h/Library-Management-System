@@ -165,7 +165,7 @@ const HistorySearch = () => {
 
   useEffect(() => {
     axios.defaults.withCredentials = true;
-    axios.defaults.baseURL = "http://localhost:5000";
+    axios.defaults.baseURL = "https://library-management-system-ae84.onrender.com";
   }, []);
 
   const fetchHistory = async () => {
