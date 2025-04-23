@@ -1,29 +1,61 @@
-import { useEffect, useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
-import axios from "axios";
+// import { useEffect, useState } from "react";
+// import { Navigate, Outlet } from "react-router-dom";
+// import axios from "axios";
 
+// const ProtectedRoute = ({ allowedRole }) => {
+//     const [sessionValid, setSessionValid] = useState(true);
+//     const role = localStorage.getItem("role");
+
+//     useEffect(() => {
+//         axios.get("https://library-management-system-ae84.onrender.com/api/auth/check-session", { withCredentials: true })
+//             .then((res) => {
+//                 if (res.data.user.role !== allowedRole) {
+//                     window.location.href = allowedRole === "librarian" ? "/admin-dashboard" : "/student-dashboard";
+//                 }
+//             })
+//             .catch(() => {
+//                 localStorage.removeItem("role");
+//                 window.location.href = "/";
+//                 setSessionValid(false);
+//             });
+//     }, [allowedRole]);
+
+//     if (!sessionValid) return null;
+    
+//     return <Outlet />;
+// };
+
+// export default ProtectedRoute;
 const ProtectedRoute = ({ allowedRole }) => {
-    const [sessionValid, setSessionValid] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+    const [isValid, setIsValid] = useState(false);
     const role = localStorage.getItem("role");
 
     useEffect(() => {
-        axios.get("https://library-management-system-ae84.onrender.com/api/auth/check-session", { withCredentials: true })
-            .then((res) => {
-                if (res.data.user.role !== allowedRole) {
-                    window.location.href = allowedRole === "librarian" ? "/admin-dashboard" : "/student-dashboard";
+        const checkSession = async () => {
+            try {
+                const res = await axios.get(
+                    "https://library-management-system-ae84.onrender.com/api/auth/check-session", 
+                    { withCredentials: true }
+                );
+                
+                if (res.data.user.role === allowedRole) {
+                    setIsValid(true);
+                } else {
+                    window.location.href = "/";
                 }
-            })
-            .catch(() => {
+            } catch (error) {
                 localStorage.removeItem("role");
                 window.location.href = "/";
-                setSessionValid(false);
-            });
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkSession();
     }, [allowedRole]);
 
-    if (!sessionValid) return null;
+    if (isLoading) return <div>Loading...</div>;
     
-    return <Outlet />;
+    return isValid ? <Outlet /> : null;
 };
-
-export default ProtectedRoute;
-
