@@ -19,7 +19,7 @@ const ForgotPasswordPage = () => {
         setMessage("");
 
         try {
-            const { data } = await axios.post("http://localhost:5000/api/auth/forgot-password", { email });
+            const { data } = await axios.post("https://library-management-system-ae84.onrender.com/api/auth/forgot-password", { email });
             setMessage(data.message);
             setStep(2); // Move to OTP verification step
             setTimeout(() => otpInputRef.current?.focus(), 500); // Auto-focus OTP input
