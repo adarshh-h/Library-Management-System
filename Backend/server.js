@@ -15,28 +15,25 @@ app.use(cookieParser());
 //     origin: "http://localhost:5173", 
 //     credentials: true 
 // }));
+
+// const allowedOrigins = [
+//   'http://localhost:5173',
+//    'https://library-management-system-liart-six.vercel.app',
+//   'library-management-system-git-main-adarshs-projects-3c69f35f.vercel.app',
+//   'library-management-system-66s345vc5-adarshs-projects-3c69f35f.vercel.app'
+// ];
+
 const allowedOrigins = [
-  'http://localhost:5173',
-   'https://library-management-system-liart-six.vercel.app',
-  'library-management-system-git-main-adarshs-projects-3c69f35f.vercel.app',
-  'library-management-system-66s345vc5-adarshs-projects-3c69f35f.vercel.app'
+  'http://localhost:5173', // For local dev
+  'https://library-management-system-liart-six.vercel.app', // Your Vercel frontend
 ];
 
-// ✅ Proper CORS middleware
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
+    origin: allowedOrigins,
+    credentials: true, // Allow cookies in cross-origin requests
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
