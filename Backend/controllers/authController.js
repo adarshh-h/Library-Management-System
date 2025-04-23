@@ -114,7 +114,16 @@ exports.librarianLogin = [
 
             generateToken(res, user);
 
-            res.json({ message: "Librarian logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+            // res.json({ message: "Librarian logged in successfully!", user: { id: user._id, name: user.name, email: user.email, role: user.role } });
+            res.json({ 
+    message: "Librarian logged in successfully!", 
+    user: { 
+        id: user._id, 
+        name: user.name, 
+        email: user.email, 
+        role: user.role 
+    } 
+});
         } catch (error) {
             res.status(500).json({ message: "Server Error" });
         }
