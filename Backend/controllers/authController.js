@@ -175,8 +175,18 @@ exports.studentLogin = [
 ];
 
 // ✅ Logout Route (Clears Token & Expiry)
+// exports.logout = (req, res) => {
+//     res.cookie("token", "", { httpOnly: true, expires: new Date(0) }); // ✅ Explicit Expiry
+//     res.json({ message: "Logged out successfully!" });
+// };
 exports.logout = (req, res) => {
-    res.cookie("token", "", { httpOnly: true, expires: new Date(0) }); // ✅ Explicit Expiry
+    res.cookie("token", "", { 
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+        expires: new Date(0),
+        path: "/"
+    });
     res.json({ message: "Logged out successfully!" });
 };
 
