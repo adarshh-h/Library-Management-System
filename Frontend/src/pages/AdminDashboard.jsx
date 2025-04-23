@@ -9,12 +9,28 @@ import {
 const AdminDashboard = () => {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
-
   useEffect(() => {
-    axios.get("https://library-management-system-ae84.onrender.com/api/admin/dashboard", { withCredentials: true })
-      .then(res => setUser(res.data.user))
-      .catch(() => navigate("/"));
-  }, [navigate]);
+    const checkSession = async () => {
+        try {
+            const res = await axios.get(
+                "https://library-management-system-ae84.onrender.com/api/auth/check-session",
+                { withCredentials: true }
+            );
+            setUser(res.data.user);
+        } catch (error) {
+            localStorage.removeItem("role");
+            navigate("/");
+        }
+    };
+    
+    checkSession();
+}, [navigate]);
+
+  // useEffect(() => {
+  //   axios.get("https://library-management-system-ae84.onrender.com/api/admin/dashboard", { withCredentials: true })
+  //     .then(res => setUser(res.data.user))
+  //     .catch(() => navigate("/"));
+  // }, [navigate]);
 
   // const handleLogout = () => {
   //   axios.post("https://library-management-system-ae84.onrender.com/api/auth/logout", {}, { withCredentials: true })
