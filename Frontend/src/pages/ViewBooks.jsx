@@ -9,7 +9,7 @@ const ViewBooks = () => {
     useEffect(() => {
         const fetchBooks = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/books/books", {
+                const response = await axios.get("https://library-management-system-ae84.onrender.com/api/books/books", {
                     withCredentials: true,
                 });
                 setBooks(response.data);
