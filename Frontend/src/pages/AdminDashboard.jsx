@@ -11,13 +11,13 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:5000/api/admin/dashboard", { withCredentials: true })
+    axios.get("https://library-management-system-ae84.onrender.com/api/admin/dashboard", { withCredentials: true })
       .then(res => setUser(res.data.user))
       .catch(() => navigate("/"));
   }, [navigate]);
 
   const handleLogout = () => {
-    axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
+    axios.post("https://library-management-system-ae84.onrender.com/api/auth/logout", {}, { withCredentials: true })
       .then(() => navigate("/"))
       .catch(err => console.error("Logout Failed", err));
   };
