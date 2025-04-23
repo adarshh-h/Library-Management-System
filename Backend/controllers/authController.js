@@ -191,14 +191,45 @@ exports.logout = (req, res) => {
 };
 
 // ✅ Check Session Validity
-exports.checkSession = (req, res) => {
-    const token = req.cookies.token;
-    if (!token) return res.status(401).json({ message: "Session expired. Please log in again." });
+// exports.checkSession = (req, res) => {
+//     const token = req.cookies.token;
+//     if (!token) return res.status(401).json({ message: "Session expired. Please log in again." });
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        res.json({ user: decoded });
-    } catch (error) {
-        res.status(401).json({ message: "Invalid session." });
-    }
+//     try {
+//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+//         res.json({ user: decoded });
+//     } catch (error) {
+//         res.status(401).json({ message: "Invalid session." });
+//     }
+// };
+// In your authController.js
+exports.checkSession = (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Session expired. Please log in again." });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Fetch complete user data from database
+    User.findById(decoded.id)
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ message: "User not found" });
+        }
+        res.json({ 
+          user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+          }
+        });
+      })
+      .catch(err => {
+        console.error("User lookup error:", err);
+        res.status(500).json({ message: "Server Error" });
+      });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid session." });
+  }
 };
