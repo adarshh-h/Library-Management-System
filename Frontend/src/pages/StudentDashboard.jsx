@@ -22,11 +22,35 @@ const StudentDashboard = () => {
         .finally(() => setLoading(false));
     }, [navigate]);
 
-    const handleLogout = () => {
-        axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
-            .then(() => navigate("/"))
-            .catch(err => console.error("Logout Failed", err));
-    };
+    // const handleLogout = () => {
+    //     axios.post("http://localhost:5000/api/auth/logout", {}, { withCredentials: true })
+    //         .then(() => navigate("/"))
+    //         .catch(err => console.error("Logout Failed", err));
+    // };
+    const [loggingOut, setLoggingOut] = useState(false);
+
+const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+        await axios.post(
+            "https://library-management-system-ae84.onrender.com/api/auth/logout", 
+            {}, 
+            { 
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        localStorage.removeItem("role");
+        window.location.href = "/";
+    } catch (err) {
+        console.error("Logout Failed", err);
+        window.location.href = "/";
+    } finally {
+        setLoggingOut(false);
+    }
+};
 
     if (loading) return <div className="text-center mt-10">Loading...</div>;
 
@@ -34,12 +58,19 @@ const StudentDashboard = () => {
         <div className="p-6 max-w-4xl mx-auto">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-2xl font-bold">Welcome, {user.name}</h1>
-                <button 
+{/*                 <button 
                     onClick={handleLogout}
                     className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
                 >
                     Logout
-                </button>
+                </button> */}
+                <button 
+    onClick={handleLogout}
+    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+    disabled={loggingOut}
+>
+    {loggingOut ? "Logging out..." : "Logout"}
+</button>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
