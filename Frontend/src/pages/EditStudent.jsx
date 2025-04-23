@@ -12,7 +12,7 @@ const EditStudent = () => {
     useEffect(() => {
         const fetchStudent = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/api/admin/students/${id}`, { withCredentials: true });
+                const response = await axios.get(`https://library-management-system-ae84.onrender.com/api/admin/students/${id}`, { withCredentials: true });
                 if (response.data) {
                     setStudent(response.data);
                 } else {
