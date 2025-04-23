@@ -9,26 +9,62 @@ const LibrarianLogin = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
+    // const handleLogin = async (e) => {
+    //     e.preventDefault();
+    //     setLoading(true);
+    //     setError("");
+
+    //     try {
+    //         await axios.post(
+    //             "https://library-management-system-ae84.onrender.com/api/auth/librarian-login",
+    //             { email, password },
+    //             { withCredentials: true }
+    //         );
+
+    //         localStorage.setItem("role", "librarian");
+    //         navigate("/admin-dashboard", { replace: true });
+    //     } catch (error) {
+    //         setError(error.response?.data?.message || "Login failed!");
+    //     } finally {
+    //         setLoading(false);
+    //     }
+    // };
     const handleLogin = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-        setError("");
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-        try {
-            await axios.post(
-                "https://library-management-system-ae84.onrender.com/api/auth/librarian-login",
-                { email, password },
-                { withCredentials: true }
-            );
+    try {
+        const response = await axios.post(
+            "https://library-management-system-ae84.onrender.com/api/auth/librarian-login",
+            { email, password },
+            { 
+                withCredentials: true,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            }
+        );
 
+        // Add debug logging
+        console.log("Login response:", response);
+        console.log("Cookies:", document.cookie);
+
+        if (response.data && response.data.user) {
             localStorage.setItem("role", "librarian");
-            navigate("/admin-dashboard", { replace: true });
-        } catch (error) {
-            setError(error.response?.data?.message || "Login failed!");
-        } finally {
-            setLoading(false);
+            // Add timeout to allow cookie to be set
+            setTimeout(() => {
+                navigate("/admin-dashboard", { replace: true });
+            }, 100);
         }
-    };
+    } catch (error) {
+        console.error("Full error:", error);
+        setError(error.response?.data?.message || "Login failed!");
+    } finally {
+        setLoading(false);
+    }
+};
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
