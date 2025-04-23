@@ -34,7 +34,7 @@ function App() {
 
 
                 {/* Protected Routes for Librarian */}
-                <Route element={<ProtectedRoute allowedRole="librarian" />}>
+{/*                 <Route element={<ProtectedRoute allowedRole="librarian" />}>
                     <Route path="/admin-dashboard" element={<AdminDashboard />} />
                     <Route path="/create-student" element={<CreateStudent />} />
                     <Route path="/view-students" element={<ViewStudents />} />
@@ -42,13 +42,25 @@ function App() {
                     <Route path="/bulk-import-students" element={<BulkImportStudents />} />
                     <Route path="/add-librarian" element={<AddLibrarian />} />       
                     <Route path="/bulk-import-books" element={<BulkImportBooks />} />
-                    <Route path="/view-books" element={<ViewBooks />} /> {/* New route */}
-
+                    <Route path="/view-books" element={<ViewBooks />} /> 
                     <Route path="/issue-books" element={<IssueBooks />} />   
                     <Route path="return-books" element={<ReturnBooks/>}/>
                     <Route path="history-books" element={<HistoryView/>}/>
                    
-                </Route>
+                </Route> */}
+                    <Route element={<ProtectedRoute allowedRole="librarian" />}>
+    <Route path="/admin-dashboard" element={<AdminDashboard />} />
+    <Route path="/add-librarian" element={<AddLibrarian />} />
+    <Route path="/create-student" element={<CreateStudent />} />
+    <Route path="/view-students" element={<ViewStudents />} />
+    <Route path="/bulk-import-students" element={<BulkImportStudents />} />
+    <Route path="/bulk-import-books" element={<BulkImportBooks />} />
+    <Route path="/view-books" element={<ViewBooks />} />
+    <Route path="/issue-books" element={<IssueBooks />} />
+    <Route path="/return-books" element={<ReturnBooks />} />
+    <Route path="/history-books" element={<HistoryView />} />
+</Route>
+
 
                 {/* Protected Routes for Student */}
                 <Route element={<ProtectedRoute allowedRole="student" />}>
