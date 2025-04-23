@@ -32,7 +32,7 @@ const BulkImportBooks = () => {
 
         try {
             const { data } = await axios.post(
-                "http://localhost:5000/api/books/bulk-import-books",
+                "https://library-management-system-ae84.onrender.com/api/books/bulk-import-books",
                 formData,
                 {
                     headers: { "Content-Type": "multipart/form-data" },
