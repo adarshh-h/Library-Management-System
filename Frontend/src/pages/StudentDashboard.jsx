@@ -11,8 +11,8 @@ const StudentDashboard = () => {
     useEffect(() => {
         // Fetch user data and issued books
         axios.all([
-            axios.get("http://localhost:5000/api/student/dashboard", { withCredentials: true }),
-            axios.get("http://localhost:5000/api/student/issued-books", { withCredentials: true })
+            axios.get("https://library-management-system-ae84.onrender.com/api/student/dashboard", { withCredentials: true }),
+            axios.get("https://library-management-system-ae84.onrender.com/api/student/issued-books", { withCredentials: true })
         ])
         .then(axios.spread((userRes, booksRes) => {
             setUser(userRes.data.user);
