@@ -71,7 +71,7 @@ const ChangePassword = () => {
 
       const { currentPassword, newPassword } = form;
       const res = await axios.post(
-        "http://localhost:5000/api/student/change-password",
+        "https://library-management-system-ae84.onrender.com/api/student/change-password",
         { currentPassword, newPassword },
         { withCredentials: true }
       );
