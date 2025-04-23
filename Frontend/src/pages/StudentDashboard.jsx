@@ -6,6 +6,7 @@ const StudentDashboard = () => {
     const [user, setUser] = useState(null);
     const [issuedBooks, setIssuedBooks] = useState([]);
     const [loading, setLoading] = useState(true);
+     const [loggingOut, setLoggingOut] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -27,7 +28,7 @@ const StudentDashboard = () => {
     //         .then(() => navigate("/"))
     //         .catch(err => console.error("Logout Failed", err));
     // };
-    const [loggingOut, setLoggingOut] = useState(false);
+
 
 const handleLogout = async () => {
     setLoggingOut(true);
