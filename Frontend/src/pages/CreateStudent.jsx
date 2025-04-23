@@ -98,7 +98,7 @@ const CreateStudent = () => {
 
         try {
             await axios.post(
-                "http://localhost:5000/api/admin/create-student",
+                "https://library-management-system-ae84.onrender.com/api/admin/create-student",
                 { name, email, phone, department, batch, rollNumber },
                 { withCredentials: true }
             );
