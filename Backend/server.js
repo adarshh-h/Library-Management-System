@@ -17,7 +17,9 @@ app.use(cookieParser());
 // }));
 const allowedOrigins = [
   'http://localhost:5173',
-   'https://library-management-system-liart-six.vercel.app'
+   'https://library-management-system-liart-six.vercel.app',
+  'library-management-system-git-main-adarshs-projects-3c69f35f.vercel.app',
+  'library-management-system-66s345vc5-adarshs-projects-3c69f35f.vercel.app'
 ];
 
 // ✅ Proper CORS middleware
