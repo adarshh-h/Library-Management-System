@@ -11,7 +11,7 @@ const ViewStudents = () => {
     useEffect(() => {
         const fetchStudents = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/admin/students", { withCredentials: true });
+                const response = await axios.get("https://library-management-system-ae84.onrender.com/api/admin/students", { withCredentials: true });
                 setStudents(response.data);
             } catch (error) {
                 setError("Failed to fetch students.");
