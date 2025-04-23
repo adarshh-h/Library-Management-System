@@ -16,11 +16,35 @@ const AdminDashboard = () => {
       .catch(() => navigate("/"));
   }, [navigate]);
 
-  const handleLogout = () => {
-    axios.post("https://library-management-system-ae84.onrender.com/api/auth/logout", {}, { withCredentials: true })
-      .then(() => navigate("/"))
-      .catch(err => console.error("Logout Failed", err));
-  };
+  // const handleLogout = () => {
+  //   axios.post("https://library-management-system-ae84.onrender.com/api/auth/logout", {}, { withCredentials: true })
+  //     .then(() => navigate("/"))
+  //     .catch(err => console.error("Logout Failed", err));
+  // };
+  const handleLogout = async () => {
+    try {
+        await axios.post(
+            "https://library-management-system-ae84.onrender.com/api/auth/logout", 
+            {}, 
+            { 
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+        
+        // Clear local storage
+        localStorage.removeItem("role");
+        
+        // Force a hard redirect to ensure complete logout
+        window.location.href = "/";
+    } catch (err) {
+        console.error("Logout Failed", err);
+        // Fallback redirect if logout fails
+        window.location.href = "/";
+    }
+};
 
   if (!user) {
     return <h2 className="text-center mt-10 text-xl text-gray-600 animate-pulse">Loading...</h2>;
