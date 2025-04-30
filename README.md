@@ -2,9 +2,8 @@
  
 A full-stack web application designed for colleges and institutions to manage book issuing, returns, students, and librarian accounts effectively. Built using the MERN stack (MongoDB, Express, React, Node.js).
 
-🚀 Live Demo
-
-🔗 Frontend (Vercel): https://your-frontend-url.vercel.app
+🚀 Live Demo 
+🔗 (https://library-management-system-liart-six.vercel.app/)
 
 
 🔐 User Access & Authentication
@@ -48,13 +47,13 @@ Change password securely
 
 🛠️ Tech Stack:
 
-Frontend	React + Tailwind CSS
+Frontend:	React + Tailwind CSS
 
-Backend	Express.js (Node.js)
+Backend:	Express.js (Node.js)
 
-Database	MongoDB (Atlas)
+Database:	MongoDB (Atlas)
 
-Auth	JWT + Cookies
+Auth:	JWT + Cookies
 
 
 
