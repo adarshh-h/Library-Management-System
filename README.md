@@ -1,11 +1,14 @@
-📚 Library Management System
+ 📚 Library Management System
+ 
 A full-stack web application designed for colleges and institutions to manage book issuing, returns, students, and librarian accounts effectively. Built using the MERN stack (MongoDB, Express, React, Node.js).
 
 🚀 Live Demo
+
 🔗 Frontend (Vercel): https://your-frontend-url.vercel.app
-Replace the URLs with your actual deployed links.
+
 
 🔐 User Access & Authentication
+
 ✅ Restricted Signup: There is no public signup to prevent unauthorized access.
 
 👨‍🏫 Librarian accounts are created manually via backend or admin panel.
@@ -14,8 +17,10 @@ Replace the URLs with your actual deployed links.
 
 🔐 All routes are protected using JWT-based authentication and role-based authorization.
 
-🧩 Features
-👨‍🏫 Librarian
+🧩 Features:-
+
+👨‍🏫 Librarian:
+
 Login with secure credentials
 
 Add / View / Bulk Import Students
@@ -41,12 +46,15 @@ View issue/return history with status
 
 Change password securely
 
-🛠️ Tech Stack
+🛠️ Tech Stack:
 
-Layer	Technology
 Frontend	React + Tailwind CSS
+
 Backend	Express.js (Node.js)
+
 Database	MongoDB (Atlas)
+
 Auth	JWT + Cookies
-Deployment	Vercel (Frontend), Render (Backend)
-⚙️ Environment Variables
+
+
+
